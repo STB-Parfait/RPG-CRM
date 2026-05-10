@@ -1,7 +1,17 @@
 services:
+  api:
+    build: .
+    container_name: spring_api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
   db:
     image: mysql:8.0
-    container_name: mysql-api
+    container_name: mysql_api
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -10,3 +20,5 @@ services:
       - "3306:3306"
     volumes:
       - ./db:/var/lib/mysql
+volumes:
+  mysql_data:
