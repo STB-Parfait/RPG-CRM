@@ -1,14 +1,14 @@
-package services;
+package api.services;
 
-import exceptions.AlreadyExistsException;
-import exceptions.UserNotFoundException;
-import models.User;
-import models.UserRegister;
-import models.UserResponse;
+import api.exceptions.AlreadyExistsException;
+import api.exceptions.UserNotFoundException;
+import api.models.User;
+import api.models.requests.CreateUserRequest;
+import api.models.responses.UserResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import repositories.UserRepository;
+import api.repositories.UserRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class UserService {
         this.encoder = encoder;
     }
 
-    public UUID createUser(UserRegister dto){
+    public UserResponse createUser(CreateUserRequest dto){
 
         if(userRepository.existsUserByUsername(dto.username())){
             throw new AlreadyExistsException(ALREADY_EXISTS_MESSAGE);
@@ -35,7 +35,8 @@ public class UserService {
 
         User newUser = new User(dto.username(), encoder.encode(dto.password()));
         userRepository.save(newUser);
-        return newUser.getId();
+
+        return new UserResponse(newUser.getId(), newUser.getUsername(), newUser.isVerified());
 
     }
 

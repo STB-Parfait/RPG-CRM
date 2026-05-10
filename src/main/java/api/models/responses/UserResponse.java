@@ -1,4 +1,4 @@
-package models;
+package api.models.responses;
 
 import jakarta.validation.constraints.NotBlank;
 
